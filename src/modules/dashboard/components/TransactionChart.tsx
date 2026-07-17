@@ -18,7 +18,7 @@ export default function TransactionChart({
   data: { day: string; current: number; last: number }[]
 }) {
   return (
-    <div className="h-[428px] flex-1 rounded-[4px] bg-white p-[16px] shadow-card">
+    <div className="h-[428px] min-w-0 rounded-[4px] bg-white p-[16px] shadow-card">
       <p className="text-[13px] font-medium text-black">{title}</p>
       <p className="mt-[18px] text-[11px] text-neutral-500">{subtitle}</p>
       <div className="mt-[10px] h-[267px]">

@@ -22,19 +22,21 @@ export default function DashboardPage() {
   const rows = filterTransactions(transactions, filters)
 
   return (
-    <div className="flex flex-col gap-[24px]">
+    // Column counts key off the container, not the viewport — collapsing the sidebar
+    // to its rail hands these grids ~190px more and should be allowed to add a column.
+    <div className="@container flex flex-col gap-[24px]">
       <div>
         <h1 className="text-[14px] font-bold tracking-wide text-black">DASHBOARD</h1>
         <p className="mt-[15px] text-[11px] text-neutral-500">/Dashboard</p>
       </div>
 
-      <div className="flex gap-[22px]">
+      <div className="grid grid-cols-2 gap-[22px] @min-[1090px]:grid-cols-4">
         {statCards.map((c) => (
           <StatCard key={c.label} {...c} />
         ))}
       </div>
 
-      <div className="flex gap-[22px]">
+      <div className="grid grid-cols-1 gap-[22px] @min-[920px]:grid-cols-2">
         <TransactionChart
           title="Transaction by Value"
           subtitle="Current vs Last week on value of transactions"
@@ -49,7 +51,7 @@ export default function DashboardPage() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-[22px] xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-[22px] @min-[800px]:grid-cols-2">
         {TOP_MERCHANT_PANELS.map((panel) => (
           <TopMerchantsPanel key={panel.title} title={panel.title} rows={panel.rows} kind={panel.kind} />
         ))}

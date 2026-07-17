@@ -10,7 +10,7 @@ export default function MerchantFilter() {
 
   return (
     <div className="rounded-[4px] bg-white px-[28px] py-[25px] shadow-card">
-      <form className="flex items-end gap-[19px]" onSubmit={(e) => e.preventDefault()}>
+      <form className="flex flex-wrap items-end gap-[19px]" onSubmit={(e) => e.preventDefault()}>
         <label className="flex flex-col gap-[2px]">
           <span className="text-[12px] text-black">Date</span>
           {/* ponytail: the comp shows a range picker; native date inputs cover it until a range is actually needed. */}

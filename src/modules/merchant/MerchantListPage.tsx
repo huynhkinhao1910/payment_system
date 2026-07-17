@@ -29,7 +29,7 @@ export default function MerchantListPage() {
       <MerchantFilter />
 
       <div className="rounded-[4px] bg-white p-[28px] shadow-card">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-[12px]">
           <Link
             to="/merchants/new"
             className="flex h-[30px] items-center justify-center rounded-[3px] bg-[#f1b44c] px-[10px] text-[13px] font-medium text-white"

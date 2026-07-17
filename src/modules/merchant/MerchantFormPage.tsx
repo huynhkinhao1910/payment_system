@@ -76,7 +76,7 @@ export default function MerchantFormPage() {
         <p className="text-[11px] font-medium text-black">Merchant Information</p>
 
         <div className="mt-[34px] flex flex-wrap gap-[59px]">
-          <div className="flex min-w-[300px] flex-1 flex-col gap-[16px]">
+          <div className="flex min-w-0 flex-1 flex-col gap-[16px] sm:min-w-[300px]">
             {COLUMN_1.map(renderField)}
             <RadioGroup
               label="Status"
@@ -86,7 +86,7 @@ export default function MerchantFormPage() {
               onChange={(v) => set('status', v)}
             />
           </div>
-          <div className="flex min-w-[300px] flex-1 flex-col gap-[16px]">
+          <div className="flex min-w-0 flex-1 flex-col gap-[16px] sm:min-w-[300px]">
             {COLUMN_2.map(renderField)}
             <Toggle label="Enable Send Paylink" checked={sendPaylink} onChange={setSendPaylink} />
             <Toggle label="Enable Transaction Limit" checked={transactionLimit} onChange={setTransactionLimit} />
