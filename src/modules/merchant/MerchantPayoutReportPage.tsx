@@ -3,18 +3,20 @@ import Pagination from '@/shared/ui/Pagination'
 import FilterBar from '@/shared/ui/FilterBar'
 import PayoutTable from './components/PayoutTable'
 import { payouts } from './data'
-import { sortRows, type SortDir } from './sortMerchants'
+import { nextSortDir, sortRows, type SortDir } from './sortMerchants'
 
 export default function MerchantPayoutReportPage() {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
-  const [sortDir, setSortDir] = useState<SortDir>('asc')
+  const [sortDir, setSortDir] = useState<SortDir | null>(null)
   const pages = Math.max(1, Math.ceil(payouts.length / perPage))
-  // Sort the whole set before paging, so page 1 holds the true first rows.
-  const visible = sortRows(payouts, (p) => p.transactionNo, sortDir).slice((page - 1) * perPage, page * perPage)
+  // Sorting the whole set before paging keeps page 1 on the true first rows;
+  // untouched, the rows stay in the order they arrived.
+  const sorted = sortDir ? sortRows(payouts, (p) => p.transactionNo, sortDir) : payouts
+  const visible = sorted.slice((page - 1) * perPage, page * perPage)
 
   const toggleSort = () => {
-    setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    setSortDir(nextSortDir)
     setPage(1)
   }
 

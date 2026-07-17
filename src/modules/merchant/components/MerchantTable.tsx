@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import iconSort from '@/assets/icon-sort.svg'
+import SortIcon from '@/shared/ui/SortIcon'
 import iconEye from '@/assets/icon-eye.svg'
 import iconEdit from '@/assets/icon-edit.svg'
 import iconPassword from '@/assets/icon-password.svg'
@@ -66,7 +66,7 @@ export default function MerchantTable({
   onToggleSort,
 }: {
   rows: Merchant[]
-  sortDir: SortDir
+  sortDir: SortDir | null
   onToggleSort: () => void
 }) {
   return (
@@ -93,12 +93,16 @@ export default function MerchantTable({
                 onClick={onToggleSort}
                 // ponytail: the table is divs, not <table>, so aria-sort has nothing to
                 // attach to. The label carries the state until it becomes a real table.
-                aria-label={`Merchant Code, sorted ${sortDir === 'asc' ? 'ascending' : 'descending'}. Click to reverse.`}
-                title={`Sort by ${c.label} (${sortDir === 'asc' ? 'ascending' : 'descending'})`}
+                aria-label={
+                  sortDir
+                    ? `Merchant Code, sorted ${sortDir === 'asc' ? 'ascending' : 'descending'}. Click to reverse.`
+                    : 'Merchant Code, not sorted. Click to sort ascending.'
+                }
+                title={sortDir ? `Sort by ${c.label} (${sortDir === 'asc' ? 'ascending' : 'descending'})` : `Sort by ${c.label}`}
                 className={`${cls} cursor-pointer text-left`}
               >
                 {c.label}
-                <img src={iconSort} alt="" className={`size-[18px] ${sortDir === 'desc' ? 'rotate-180' : ''}`} />
+                <SortIcon dir={sortDir} />
               </button>
             )
           })}

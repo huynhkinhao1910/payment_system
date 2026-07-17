@@ -1,20 +1,22 @@
 import { useState } from 'react'
 import FilterBar from '@/shared/ui/FilterBar'
 import Pagination from '@/shared/ui/Pagination'
-import { sortRows, type SortDir } from '@/modules/merchant/sortMerchants'
+import { nextSortDir, sortRows, type SortDir } from '@/modules/merchant/sortMerchants'
 import GatewayTable from './components/GatewayTable'
 import { gateways } from './data'
 
 export default function GatewayListPage() {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
-  const [sortDir, setSortDir] = useState<SortDir>('asc')
+  const [sortDir, setSortDir] = useState<SortDir | null>(null)
   const pages = Math.max(1, Math.ceil(gateways.length / perPage))
-  // Sort the whole set before paging, so page 1 holds the true first rows.
-  const visible = sortRows(gateways, (g) => g.gatewayCode, sortDir).slice((page - 1) * perPage, page * perPage)
+  // Sorting the whole set before paging keeps page 1 on the true first rows;
+  // untouched, the rows stay in the order they arrived.
+  const sorted = sortDir ? sortRows(gateways, (g) => g.gatewayCode, sortDir) : gateways
+  const visible = sorted.slice((page - 1) * perPage, page * perPage)
 
   const toggleSort = () => {
-    setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    setSortDir(nextSortDir)
     setPage(1)
   }
 

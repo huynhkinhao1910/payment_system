@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Pagination from '@/shared/ui/Pagination'
 import StatCard from './components/StatCard'
 import TransactionChart from './components/TransactionChart'
 import TransactionTable from './components/TransactionTable'
@@ -19,7 +20,18 @@ const TOP_MERCHANT_PANELS = [
 
 export default function DashboardPage() {
   const [filters, setFilters] = useState<Filters>(emptyFilters)
+  const [page, setPage] = useState(1)
+  const [perPage, setPerPage] = useState(10)
   const rows = filterTransactions(transactions, filters)
+  const pages = Math.max(1, Math.ceil(rows.length / perPage))
+  const visible = rows.slice((page - 1) * perPage, page * perPage)
+
+  // A new filter set has its own page 1 — staying on page 3 of the old result
+  // set lands on an empty table.
+  const applyFilters = (f: Filters) => {
+    setFilters(f)
+    setPage(1)
+  }
 
   return (
     // Column counts key off the container, not the viewport — collapsing the sidebar
@@ -58,10 +70,39 @@ export default function DashboardPage() {
       </div>
 
       <div className="rounded-[4px] bg-white p-[24px] shadow-card">
-        <TransactionFilter onApply={setFilters} />
+        <TransactionFilter onApply={applyFilters} />
       </div>
 
-      <TransactionTable rows={rows} />
+      <div className="rounded-[4px] bg-white p-[28px] shadow-card">
+        <div className="flex flex-wrap items-center justify-end gap-[12px]">
+          <label className="flex items-center gap-[8px] text-[12px] text-[#6c6c6c]">
+            Show
+            <select
+              value={perPage}
+              onChange={(e) => {
+                setPerPage(Number(e.target.value))
+                setPage(1)
+              }}
+              className="h-[26px] rounded-[3px] border border-[#c8c8c8] px-[6px]"
+            >
+              {[10, 25, 50].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+            rows/entries
+          </label>
+        </div>
+
+        <div className="mt-[20px]">
+          <TransactionTable rows={visible} />
+        </div>
+
+        <div className="mt-[20px]">
+          <Pagination page={page} pages={pages} onChange={setPage} />
+        </div>
+      </div>
     </div>
   )
 }

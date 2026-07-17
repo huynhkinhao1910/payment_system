@@ -2,7 +2,7 @@ import { useState } from 'react'
 import FilterBar from '@/shared/ui/FilterBar'
 import Pagination from '@/shared/ui/Pagination'
 import StatCard from '@/modules/dashboard/components/StatCard'
-import { sortRows, type SortDir } from '@/modules/merchant/sortMerchants'
+import { nextSortDir, sortRows, type SortDir } from '@/modules/merchant/sortMerchants'
 import TransactionListTable from './components/TransactionListTable'
 import { transactions, TRANSACTION_STATUSES } from './data'
 
@@ -18,13 +18,15 @@ const STATS = [
 export default function TransactionListPage() {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
-  const [sortDir, setSortDir] = useState<SortDir>('asc')
+  const [sortDir, setSortDir] = useState<SortDir | null>(null)
   const pages = Math.max(1, Math.ceil(transactions.length / perPage))
-  // Sort the whole set before paging, so page 1 holds the true first rows.
-  const visible = sortRows(transactions, (t) => t.transactionNo, sortDir).slice((page - 1) * perPage, page * perPage)
+  // Sorting the whole set before paging keeps page 1 on the true first rows;
+  // untouched, the rows stay in the order they arrived.
+  const sorted = sortDir ? sortRows(transactions, (t) => t.transactionNo, sortDir) : transactions
+  const visible = sorted.slice((page - 1) * perPage, page * perPage)
 
   const toggleSort = () => {
-    setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    setSortDir(nextSortDir)
     setPage(1)
   }
 

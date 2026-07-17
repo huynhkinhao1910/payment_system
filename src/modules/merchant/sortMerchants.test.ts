@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 import type { Merchant } from './data'
-import { sortMerchants } from './sortMerchants'
+import { nextSortDir, sortMerchants } from './sortMerchants'
 
 const rows = (...codes: string[]) => codes.map((merchantCode) => ({ merchantCode }) as Merchant)
 const codes = (list: Merchant[]) => list.map((m) => m.merchantCode)
@@ -21,4 +21,10 @@ test('does not mutate the input', () => {
   const input = rows('SO0002', 'SO0001')
   sortMerchants(input, 'asc')
   expect(codes(input)).toEqual(['SO0002', 'SO0001'])
+})
+
+test('cycles through asc, desc, then back to unsorted', () => {
+  expect(nextSortDir(null)).toBe('asc')
+  expect(nextSortDir('asc')).toBe('desc')
+  expect(nextSortDir('desc')).toBe(null)
 })

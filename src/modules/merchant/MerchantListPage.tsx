@@ -4,18 +4,20 @@ import Pagination from '@/shared/ui/Pagination'
 import FilterBar from '@/shared/ui/FilterBar'
 import MerchantTable from './components/MerchantTable'
 import { merchants } from './data'
-import { sortMerchants, type SortDir } from './sortMerchants'
+import { nextSortDir, sortMerchants, type SortDir } from './sortMerchants'
 
 export default function MerchantListPage() {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
-  const [sortDir, setSortDir] = useState<SortDir>('asc')
+  const [sortDir, setSortDir] = useState<SortDir | null>(null)
   const pages = Math.max(1, Math.ceil(merchants.length / perPage))
-  // Sort the whole set before paging, so page 1 holds the true first rows.
-  const visible = sortMerchants(merchants, sortDir).slice((page - 1) * perPage, page * perPage)
+  // Sorting the whole set before paging keeps page 1 on the true first rows;
+  // untouched, the rows stay in the order they arrived.
+  const sorted = sortDir ? sortMerchants(merchants, sortDir) : merchants
+  const visible = sorted.slice((page - 1) * perPage, page * perPage)
 
   const toggleSort = () => {
-    setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    setSortDir(nextSortDir)
     setPage(1)
   }
 
