@@ -31,6 +31,10 @@ function NavGroup({
   const { pathname } = useLocation()
   const holdsActive = item.children.some((c) => pathname === c.to || pathname.startsWith(`${c.to}/`))
   const [open, setOpen] = useState(holdsActive)
+  // Navigating re-syncs every group to whether it holds the new route, so moving
+  // to another group folds this one shut. A manual toggle sticks until the next
+  // navigation — only pathname resets it, not the toggle itself.
+  useEffect(() => setOpen(holdsActive), [pathname, holdsActive])
   const btnRef = useRef<HTMLButtonElement>(null)
   const popRef = useRef<HTMLDivElement>(null)
   const popId = `nav-${item.label.replace(/\s+/g, '-').toLowerCase()}`

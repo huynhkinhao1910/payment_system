@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Pagination from '@/shared/ui/Pagination'
-import MerchantFilter from './components/MerchantFilter'
+import FilterBar from '@/shared/ui/FilterBar'
 import MerchantTable from './components/MerchantTable'
 import { merchants } from './data'
 import { sortMerchants, type SortDir } from './sortMerchants'
@@ -26,7 +26,7 @@ export default function MerchantListPage() {
         <p className="mt-[15px] text-[11px] text-[#575757]">/Merchant/ Merchant List</p>
       </div>
 
-      <MerchantFilter />
+      <FilterBar fields={['Merchant Code', 'Merchant Name', 'Company RegNo']} />
 
       <div className="rounded-[4px] bg-white p-[28px] shadow-card">
         <div className="flex flex-wrap items-center justify-between gap-[12px]">

@@ -5,7 +5,7 @@ import DateInput from '@/shared/ui/DateInput'
 const FIELD =
   'h-[31px] w-[211px] rounded-[3px] border border-[#c8c8c8] bg-white px-[13px] text-[11px] text-[#6c6c6c] placeholder:text-[#a8a8a8]'
 
-export default function MerchantFilter() {
+export default function FilterBar({ fields }: { fields: string[] }) {
   const dateRef = useRef<HTMLInputElement>(null)
 
   return (
@@ -27,7 +27,7 @@ export default function MerchantFilter() {
           </span>
         </label>
 
-        {['Merchant Code', 'Merchant Name', 'Company RegNo'].map((label) => (
+        {fields.map((label) => (
           <label key={label} className="flex flex-col gap-[5px]">
             <span className="text-[11px] text-black">{label}</span>
             <input className={FIELD} placeholder={label} />

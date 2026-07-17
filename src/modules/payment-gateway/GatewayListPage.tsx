@@ -1,17 +1,17 @@
 import { useState } from 'react'
-import Pagination from '@/shared/ui/Pagination'
 import FilterBar from '@/shared/ui/FilterBar'
-import PayoutTable from './components/PayoutTable'
-import { payouts } from './data'
-import { sortRows, type SortDir } from './sortMerchants'
+import Pagination from '@/shared/ui/Pagination'
+import { sortRows, type SortDir } from '@/modules/merchant/sortMerchants'
+import GatewayTable from './components/GatewayTable'
+import { gateways } from './data'
 
-export default function MerchantPayoutReportPage() {
+export default function GatewayListPage() {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
   const [sortDir, setSortDir] = useState<SortDir>('asc')
-  const pages = Math.max(1, Math.ceil(payouts.length / perPage))
+  const pages = Math.max(1, Math.ceil(gateways.length / perPage))
   // Sort the whole set before paging, so page 1 holds the true first rows.
-  const visible = sortRows(payouts, (p) => p.transactionNo, sortDir).slice((page - 1) * perPage, page * perPage)
+  const visible = sortRows(gateways, (g) => g.gatewayCode, sortDir).slice((page - 1) * perPage, page * perPage)
 
   const toggleSort = () => {
     setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
@@ -21,11 +21,11 @@ export default function MerchantPayoutReportPage() {
   return (
     <div className="flex flex-col gap-[22px]">
       <div>
-        <h1 className="text-[14px] font-medium text-[#353535]">MERCHANT PAYOUT REPORT</h1>
-        <p className="mt-[15px] text-[11px] text-[#575757]">/Merchant/ Merchant Payout Report</p>
+        <h1 className="text-[14px] font-medium text-[#353535]">PAYMENT GATEWAY LIST</h1>
+        <p className="mt-[15px] text-[11px] text-[#575757]">/Payment Gateway/ Payment Gateway List</p>
       </div>
 
-      <FilterBar fields={['Merchant Code', 'Merchant Name', 'Company RegNo']} />
+      <FilterBar fields={['Payment Gateway Name', 'Payment Gateway Code']} />
 
       <div className="rounded-[4px] bg-white p-[28px] shadow-card">
         <div className="flex flex-wrap items-center justify-end gap-[12px]">
@@ -50,7 +50,7 @@ export default function MerchantPayoutReportPage() {
         </div>
 
         <div className="mt-[20px]">
-          <PayoutTable rows={visible} sortDir={sortDir} onToggleSort={toggleSort} />
+          <GatewayTable rows={visible} sortDir={sortDir} onToggleSort={toggleSort} />
         </div>
 
         <div className="mt-[20px]">

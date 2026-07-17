@@ -27,7 +27,11 @@ export const NAV: NavItem[] = [
       { to: '/merchant-payout-report', label: 'Merchant Payout Report' },
     ],
   },
-  { label: 'Payment Gateway', icon: iconPayment, children: [] },
+  {
+    label: 'Payment Gateway',
+    icon: iconPayment,
+    children: [{ to: '/payment-gateways', label: 'Payment Gateway List' }],
+  },
   { label: 'Transactions', icon: iconPayment, children: [] },
   { label: 'System Log', icon: iconLog, children: [] },
   { label: 'Tools', icon: iconTool, children: [] },
