@@ -1,0 +1,22 @@
+@import 'tailwindcss';
+
+/* Tokens lifted from the Figma file (Payment / node 3:4). */
+@theme {
+  --color-sidebar: #2a3042;
+  --color-sidebar-fg: #aaa4a4;
+  --color-canvas: #f5f6f8;
+  --color-stat-purple: #8973e5;
+  --color-stat-green: #09b78c;
+  --color-stat-blue: #1b79f5;
+  --color-stat-orange: #f48f03;
+  --color-stat-orange-icon: #fe9605;
+
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-card: 0 0 3px 0 rgb(0 0 0 / 0.15);
+}
+
+body {
+  background: var(--color-canvas);
+  font-family: var(--font-sans);
+}
