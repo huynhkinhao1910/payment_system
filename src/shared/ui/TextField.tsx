@@ -16,7 +16,7 @@ export default function TextField({ label, required, error, wrapperClassName = '
       <input
         {...input}
         aria-invalid={error ? true : undefined}
-        className={`h-[31px] w-full rounded-[3px] border bg-white px-[13px] text-[11px] text-[#6c6c6c] outline-none placeholder:text-[#a8a8a8] ${
+        className={`h-[31px] w-full rounded-[3px] border bg-white px-[13px] text-[11px] text-[#6c6c6c] outline-none placeholder:text-[#a8a8a8] disabled:bg-[#f1f1f1] ${
           error ? 'border-[#ff9494]' : 'border-[#c8c8c8]'
         }`}
       />

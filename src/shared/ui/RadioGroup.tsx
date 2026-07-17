@@ -6,12 +6,14 @@ export default function RadioGroup({
   options,
   value,
   onChange,
+  disabled,
 }: {
   label: string
   name: string
   options: readonly string[]
   value: string
   onChange: (v: string) => void
+  disabled?: boolean
 }) {
   return (
     <fieldset className="flex flex-col gap-[10px]">
@@ -24,8 +26,9 @@ export default function RadioGroup({
               name={name}
               value={option}
               checked={value === option}
+              disabled={disabled}
               onChange={() => onChange(option)}
-              className="size-[12px] accent-stat-blue"
+              className="size-[12px] accent-stat-blue disabled:opacity-50"
             />
             {option}
           </label>

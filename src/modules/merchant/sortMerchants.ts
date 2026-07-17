@@ -4,9 +4,11 @@ export type SortDir = 'asc' | 'desc'
 
 // Numeric collation so SO0009 sorts before SO0010 — a plain string compare
 // puts "SO0010" first once the codes reach two digits.
-export function sortMerchants(rows: Merchant[], dir: SortDir): Merchant[] {
+export function sortRows<T>(rows: T[], pick: (row: T) => string, dir: SortDir): T[] {
   return [...rows].sort((a, b) => {
-    const cmp = a.merchantCode.localeCompare(b.merchantCode, undefined, { numeric: true, sensitivity: 'base' })
+    const cmp = pick(a).localeCompare(pick(b), undefined, { numeric: true, sensitivity: 'base' })
     return dir === 'asc' ? cmp : -cmp
   })
 }
+
+export const sortMerchants = (rows: Merchant[], dir: SortDir) => sortRows(rows, (m) => m.merchantCode, dir)

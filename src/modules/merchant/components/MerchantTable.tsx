@@ -21,6 +21,10 @@ const COLUMNS = [
 
 const CELL = 'flex h-[41px] shrink-0 items-center border-r border-b border-[#c8c8c8] p-[10px] text-[12px] text-[#6c6c6c]'
 
+// ponytail: the icons are <img> SVGs, so the glyph itself can't be recoloured
+// without inlining them. A tinted disc behind each one carries the hover state.
+const ACTION = 'flex size-[26px] items-center justify-center rounded-full transition-colors'
+
 function Row({ m, zebra }: { m: Merchant; zebra: boolean }) {
   const bg = zebra ? 'bg-[#eff2f7]' : 'bg-white'
   const cells = [
@@ -41,14 +45,14 @@ function Row({ m, zebra }: { m: Merchant; zebra: boolean }) {
           <span className="truncate">{value}</span>
         </div>
       ))}
-      <div className={`${CELL} ${bg} w-[100px] justify-center gap-[10px]`}>
-        <button type="button" aria-label={`View ${m.merchantCode}`}>
+      <div className={`${CELL} ${bg} w-[100px] justify-center gap-[6px]`}>
+        <Link to={`/merchants/${m.merchantCode}`} aria-label={`View ${m.merchantCode}`} className={`${ACTION} hover:bg-[#e3f0ff]`}>
           <img src={iconEye} alt="" className="size-[16px]" />
-        </button>
-        <Link to={`/merchants/${m.merchantCode}/edit`} aria-label={`Edit ${m.merchantCode}`}>
+        </Link>
+        <Link to={`/merchants/${m.merchantCode}/edit`} aria-label={`Edit ${m.merchantCode}`} className={`${ACTION} hover:bg-[#e0f5e8]`}>
           <img src={iconEdit} alt="" className="size-[16px]" />
         </Link>
-        <button type="button" aria-label={`Reset password for ${m.merchantCode}`}>
+        <button type="button" aria-label={`Reset password for ${m.merchantCode}`} className={`${ACTION} hover:bg-[#ffeede]`}>
           <img src={iconPassword} alt="" className="size-[15px]" />
         </button>
       </div>

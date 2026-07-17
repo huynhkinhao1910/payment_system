@@ -54,15 +54,26 @@ function NavGroup({
     // The rail has no room for an accordion, so each group gets a flyout. `popover`
     // puts it in the top layer — the rail's overflow-hidden can't clip it — and
     // brings click-outside and Esc dismissal with it, so there's nothing to wire up.
+    // The popover box itself sits flush against the rail and carries the gap as
+    // transparent padding. Offsetting the box instead would leave a dead zone the
+    // pointer crosses on its way over, closing the flyout before it arrives.
     const place = () => {
       const b = btnRef.current?.getBoundingClientRect()
       const p = popRef.current
       if (!b || !p) return
       p.style.top = `${b.top}px`
-      p.style.left = `${b.right + 6}px`
+      p.style.left = `${b.right}px`
+    }
+    // togglePopover's force arg is idempotent, so re-entering an open flyout or
+    // leaving a closed one is a no-op rather than a throw.
+    const show = () => {
+      place()
+      popRef.current?.togglePopover(true)
     }
     return (
-      <>
+      // The flyout is a DOM child of this wrapper, so moving onto it never counts
+      // as leaving — mouseleave tracks the DOM tree, not the top layer's position.
+      <div onMouseEnter={show} onMouseLeave={() => popRef.current?.togglePopover(false)}>
         <button
           ref={btnRef}
           type="button"
@@ -74,24 +85,21 @@ function NavGroup({
         >
           <img src={item.icon} alt="" className="size-[18px]" />
         </button>
-        <div
-          ref={popRef}
-          id={popId}
-          popover="auto"
-          className="m-0 min-w-[180px] rounded-[4px] bg-sidebar py-[6px] shadow-lg"
-        >
-          {item.children.map((child) => (
-            <NavLink
-              key={child.to}
-              to={child.to}
-              onClick={() => popRef.current?.hidePopover()}
-              className={childClass('px-[16px]')}
-            >
-              {child.label}
-            </NavLink>
-          ))}
+        <div ref={popRef} id={popId} popover="auto" className="m-0 bg-transparent p-0 pl-[8px]">
+          <div className="min-w-[180px] overflow-hidden rounded-[4px] bg-sidebar py-[6px] shadow-lg">
+            {item.children.map((child) => (
+              <NavLink
+                key={child.to}
+                to={child.to}
+                onClick={() => popRef.current?.hidePopover()}
+                className={childClass('px-[16px]')}
+              >
+                {child.label}
+              </NavLink>
+            ))}
+          </div>
         </div>
-      </>
+      </div>
     )
   }
 

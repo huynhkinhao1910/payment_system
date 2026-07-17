@@ -16,9 +16,10 @@ import {
   type FormValues,
 } from './addMerchantForm'
 
-// Add (/merchants/new) and Edit (/merchants/:code/edit) are the same comp —
-// Figma nodes 15:802 and 37:1698 differ only by title and prefilled values.
-export default function MerchantFormPage() {
+// Add (/merchants/new), Edit (/merchants/:code/edit) and Detail
+// (/merchants/:code) are one comp — Figma nodes 15:802 and 37:1698 differ only
+// by title, prefilled values, and whether the inputs are disabled.
+export default function MerchantFormPage({ readOnly = false }: { readOnly?: boolean }) {
   const navigate = useNavigate()
   const { code } = useParams()
   const merchant = code ? merchants.find((m) => m.merchantCode === code) : undefined
@@ -48,6 +49,7 @@ export default function MerchantFormPage() {
       placeholder={f.label}
       value={values[f.name]}
       error={errors[f.name]}
+      disabled={readOnly}
       onChange={(e) => set(f.name, e.target.value)}
       wrapperClassName="w-full max-w-[465px]"
     />
@@ -65,10 +67,10 @@ export default function MerchantFormPage() {
     <div className="flex flex-col gap-[22px]">
       <div>
         <h1 className="text-[14px] font-medium text-[#353535]">
-          {merchant ? 'EDIT MERCHANT' : 'ADD MERCHANT'}
+          {readOnly ? 'MERCHANT DETAIL' : merchant ? 'EDIT MERCHANT' : 'ADD MERCHANT'}
         </h1>
         <p className="mt-[15px] text-[11px] text-[#575757]">
-          / Merchant List /{merchant ? 'Edit' : 'Add'} Merchant
+          / Merchant List / {readOnly ? 'Detail' : merchant ? 'Edit' : 'Add'} Merchant
         </p>
       </div>
 
@@ -83,13 +85,19 @@ export default function MerchantFormPage() {
               name="status"
               options={STATUS_OPTIONS}
               value={values.status}
+              disabled={readOnly}
               onChange={(v) => set('status', v)}
             />
           </div>
           <div className="flex min-w-0 flex-1 flex-col gap-[16px] sm:min-w-[300px]">
             {COLUMN_2.map(renderField)}
-            <Toggle label="Enable Send Paylink" checked={sendPaylink} onChange={setSendPaylink} />
-            <Toggle label="Enable Transaction Limit" checked={transactionLimit} onChange={setTransactionLimit} />
+            <Toggle label="Enable Send Paylink" checked={sendPaylink} disabled={readOnly} onChange={setSendPaylink} />
+            <Toggle
+              label="Enable Transaction Limit"
+              checked={transactionLimit}
+              disabled={readOnly}
+              onChange={setTransactionLimit}
+            />
             {COLUMN_2_TAIL.map(renderField)}
           </div>
         </div>
@@ -101,12 +109,21 @@ export default function MerchantFormPage() {
           >
             Back to list
           </Link>
-          <button
-            type="submit"
-            className="flex h-[30px] w-[69px] items-center justify-center rounded-[3px] bg-[#3191ff] text-[13px] font-medium text-white"
-          >
-            Save
-          </button>
+          {readOnly ? (
+            <Link
+              to={`/merchants/${code}/edit`}
+              className="flex h-[30px] w-[69px] items-center justify-center rounded-[3px] bg-[#3191ff] text-[13px] font-medium text-white"
+            >
+              Edit
+            </Link>
+          ) : (
+            <button
+              type="submit"
+              className="flex h-[30px] w-[69px] items-center justify-center rounded-[3px] bg-[#3191ff] text-[13px] font-medium text-white"
+            >
+              Save
+            </button>
+          )}
         </div>
       </form>
     </div>
