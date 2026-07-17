@@ -3,8 +3,9 @@ import Layout from '@/shared/layout/Layout'
 import { dashboardRoutes } from '@/modules/dashboard'
 import { merchantRoutes } from '@/modules/merchant'
 import { paymentGatewayRoutes } from '@/modules/payment-gateway'
+import { transactionRoutes } from '@/modules/transactions'
 
-// ponytail: Transactions, System Log and Tools are designed but not built.
+// ponytail: System Log and Tools are designed but not built.
 // They get a placeholder until each becomes its own module.
 function Placeholder({ name }: { name: string }) {
   return <p className="text-[13px] text-neutral-500">{name} — not built yet.</p>
@@ -17,7 +18,7 @@ export const routes: RouteObject[] = [
       ...dashboardRoutes,
       ...merchantRoutes,
       ...paymentGatewayRoutes,
-      { path: 'transactions', element: <Placeholder name="Transactions" /> },
+      ...transactionRoutes,
       { path: 'system-log', element: <Placeholder name="System Log" /> },
       { path: 'tools', element: <Placeholder name="Tools" /> },
     ],

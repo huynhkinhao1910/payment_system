@@ -5,7 +5,10 @@ import DateInput from '@/shared/ui/DateInput'
 const FIELD =
   'h-[31px] w-[211px] rounded-[3px] border border-[#c8c8c8] bg-white px-[13px] text-[11px] text-[#6c6c6c] placeholder:text-[#a8a8a8]'
 
-export default function FilterBar({ fields }: { fields: string[] }) {
+// A field is a text input, or a select when it carries options.
+type Field = string | { label: string; options: string[] }
+
+export default function FilterBar({ fields }: { fields: Field[] }) {
   const dateRef = useRef<HTMLInputElement>(null)
 
   return (
@@ -27,12 +30,25 @@ export default function FilterBar({ fields }: { fields: string[] }) {
           </span>
         </label>
 
-        {fields.map((label) => (
-          <label key={label} className="flex flex-col gap-[5px]">
-            <span className="text-[11px] text-black">{label}</span>
-            <input className={FIELD} placeholder={label} />
-          </label>
-        ))}
+        {fields.map((field) => {
+          const label = typeof field === 'string' ? field : field.label
+          return (
+            <label key={label} className="flex flex-col gap-[5px]">
+              <span className="text-[11px] text-black">{label}</span>
+              {typeof field === 'string' ? (
+                <input className={FIELD} placeholder={label} />
+              ) : (
+                <select className={FIELD} defaultValue={field.options[0]}>
+                  {field.options.map((o) => (
+                    <option key={o} value={o}>
+                      {o}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </label>
+          )
+        })}
 
         <button type="submit" className="h-[30px] w-[84px] rounded-[3px] bg-[#3191ff] text-[13px] font-medium text-white">
           Submit

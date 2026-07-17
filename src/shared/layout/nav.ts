@@ -32,7 +32,13 @@ export const NAV: NavItem[] = [
     icon: iconPayment,
     children: [{ to: '/payment-gateways', label: 'Payment Gateway List' }],
   },
-  { label: 'Transactions', icon: iconPayment, children: [] },
+  // ponytail: the comp also lists Payee List, Refund Request and Transaction
+  // Change Status here — none are designed yet, so only the list is registered.
+  {
+    label: 'Transactions',
+    icon: iconPayment,
+    children: [{ to: '/transactions', label: 'Transaction List' }],
+  },
   { label: 'System Log', icon: iconLog, children: [] },
   { label: 'Tools', icon: iconTool, children: [] },
 ]

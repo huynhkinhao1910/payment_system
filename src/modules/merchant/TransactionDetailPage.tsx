@@ -28,17 +28,25 @@ const COLUMN_2: { label: string; key: keyof Payout }[] = [
   { label: 'Payment Gateway Confirm Message', key: 'gatewayConfirmMessage' },
 ]
 
-const BACK_TO = '/merchant-payout-report'
-
-export default function TransactionDetailPage() {
+// Defaults are the payout report's; the transactions module passes its own rows,
+// since the comp is the same page reached from a different list.
+export default function TransactionDetailPage({
+  rows = payouts,
+  backTo = '/merchant-payout-report',
+  breadcrumb = '/Merchant/ Merchant Payout Report/ Transaction Detail',
+}: {
+  rows?: Payout[]
+  backTo?: string
+  breadcrumb?: string
+} = {}) {
   const { transactionNo } = useParams()
-  const payout = payouts.find((p) => p.transactionNo === transactionNo)
+  const payout = rows.find((p) => p.transactionNo === transactionNo)
 
   if (!payout) {
     return (
       <p className="text-[13px] text-neutral-500">
         Transaction {transactionNo} not found.{' '}
-        <Link to={BACK_TO} className="text-[#1b79f5]">
+        <Link to={backTo} className="text-[#1b79f5]">
           Back to list
         </Link>
       </p>
@@ -61,7 +69,7 @@ export default function TransactionDetailPage() {
     <div className="flex flex-col gap-[22px]">
       <div>
         <h1 className="text-[14px] font-medium text-[#353535]">TRANSACTION DETAIL</h1>
-        <p className="mt-[15px] text-[11px] text-[#575757]">/Merchant/ Merchant Payout Report/ Transaction Detail</p>
+        <p className="mt-[15px] text-[11px] text-[#575757]">{breadcrumb}</p>
       </div>
 
       <div className="rounded-[4px] bg-white p-[24px] shadow-card">
@@ -72,7 +80,7 @@ export default function TransactionDetailPage() {
 
         <div className="mt-[40px]">
           <Link
-            to={BACK_TO}
+            to={backTo}
             className="flex h-[30px] w-[84px] items-center justify-center rounded-[3px] border border-[#1b79f5] bg-white text-[13px] font-medium text-[#1b79f5]"
           >
             Back to list
