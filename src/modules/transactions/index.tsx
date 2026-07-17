@@ -13,7 +13,7 @@ export const transactionRoutes: RouteObject[] = [
       <TransactionDetailPage
         rows={transactions}
         backTo="/transactions"
-        breadcrumb="/Transactions/ Transaction List/ Transaction Detail"
+        breadcrumb="/Dashboard/ Transaction/ Transaction Detail"
       />
     ),
   },
