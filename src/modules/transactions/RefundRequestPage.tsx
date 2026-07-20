@@ -1,17 +1,26 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import FilterBar from '@/shared/ui/FilterBar'
+import FilterBar, { type Field } from '@/shared/ui/FilterBar'
 import Pagination from '@/shared/ui/Pagination'
+import { filterRows } from '@/shared/ui/filterRows'
 import { nextSortDir, sortRows, type SortDir } from '@/modules/merchant/sortMerchants'
 import RefundRequestTable from './components/RefundRequestTable'
 import { refundRequests, REFUND_STATUSES } from './data'
+
+const FIELDS: Field[] = [
+  { label: 'Transaction No', key: 'transactionNo' },
+  { label: 'Merchant Code', key: 'merchantCode' },
+  { label: 'Transaction Status', key: 'status', options: REFUND_STATUSES },
+]
 
 export default function RefundRequestPage() {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
   const [sortDir, setSortDir] = useState<SortDir | null>(null)
-  const pages = Math.max(1, Math.ceil(refundRequests.length / perPage))
-  const sorted = sortDir ? sortRows(refundRequests, (r) => r.transactionNo, sortDir) : refundRequests
+  const [filters, setFilters] = useState<Record<string, string>>({})
+  const filtered = filterRows(refundRequests, filters, FIELDS)
+  const pages = Math.max(1, Math.ceil(filtered.length / perPage))
+  const sorted = sortDir ? sortRows(filtered, (r) => r.transactionNo, sortDir) : filtered
   const visible = sorted.slice((page - 1) * perPage, page * perPage)
 
   const toggleSort = () => {
@@ -27,7 +36,11 @@ export default function RefundRequestPage() {
       </div>
 
       <FilterBar
-        fields={['Transaction No', 'Merchant Code', { label: 'Transaction Status', options: REFUND_STATUSES }]}
+        fields={FIELDS}
+        onSubmit={(v) => {
+          setFilters(v)
+          setPage(1)
+        }}
       />
 
       <div>

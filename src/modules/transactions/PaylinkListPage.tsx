@@ -1,17 +1,28 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import FilterBar from '@/shared/ui/FilterBar'
+import FilterBar, { type Field } from '@/shared/ui/FilterBar'
 import Pagination from '@/shared/ui/Pagination'
+import { filterRows } from '@/shared/ui/filterRows'
 import { nextSortDir, sortRows, type SortDir } from '@/modules/merchant/sortMerchants'
 import PaylinkTable from './components/PaylinkTable'
 import { paylinks, PAYLINK_STATUSES } from './data'
+
+const FIELDS: Field[] = [
+  { label: 'Transaction No', key: 'transactionNo' },
+  { label: 'Merchant Code', key: 'merchantCode' },
+  { label: 'Customer Name', key: 'customerName' },
+  { label: 'Customer Email', key: 'customerEmail' },
+  { label: 'Transaction Status', key: 'status', options: PAYLINK_STATUSES },
+]
 
 export default function PaylinkListPage() {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
   const [sortDir, setSortDir] = useState<SortDir | null>(null)
-  const pages = Math.max(1, Math.ceil(paylinks.length / perPage))
-  const sorted = sortDir ? sortRows(paylinks, (p) => p.transactionNo, sortDir) : paylinks
+  const [filters, setFilters] = useState<Record<string, string>>({})
+  const filtered = filterRows(paylinks, filters, FIELDS)
+  const pages = Math.max(1, Math.ceil(filtered.length / perPage))
+  const sorted = sortDir ? sortRows(filtered, (p) => p.transactionNo, sortDir) : filtered
   const visible = sorted.slice((page - 1) * perPage, page * perPage)
 
   const toggleSort = () => {
@@ -27,13 +38,11 @@ export default function PaylinkListPage() {
       </div>
 
       <FilterBar
-        fields={[
-          'Transaction No',
-          'Merchant Code',
-          'Customer Name',
-          'Customer Email',
-          { label: 'Transaction Status', options: PAYLINK_STATUSES },
-        ]}
+        fields={FIELDS}
+        onSubmit={(v) => {
+          setFilters(v)
+          setPage(1)
+        }}
       />
 
       <div>

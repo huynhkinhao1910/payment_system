@@ -1,18 +1,26 @@
 import { useState } from 'react'
-import FilterBar from '@/shared/ui/FilterBar'
+import FilterBar, { type Field } from '@/shared/ui/FilterBar'
 import Pagination from '@/shared/ui/Pagination'
+import { filterRows } from '@/shared/ui/filterRows'
 import { nextSortDir, sortRows, type SortDir } from '@/modules/merchant/sortMerchants'
 import GatewayTable from './components/GatewayTable'
 import { gateways } from './data'
+
+const FIELDS: Field[] = [
+  { label: 'Payment Gateway Name', key: 'gatewayName' },
+  { label: 'Payment Gateway Code', key: 'gatewayCode' },
+]
 
 export default function GatewayListPage() {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
   const [sortDir, setSortDir] = useState<SortDir | null>(null)
-  const pages = Math.max(1, Math.ceil(gateways.length / perPage))
+  const [filters, setFilters] = useState<Record<string, string>>({})
+  const filtered = filterRows(gateways, filters, FIELDS)
+  const pages = Math.max(1, Math.ceil(filtered.length / perPage))
   // Sorting the whole set before paging keeps page 1 on the true first rows;
   // untouched, the rows stay in the order they arrived.
-  const sorted = sortDir ? sortRows(gateways, (g) => g.gatewayCode, sortDir) : gateways
+  const sorted = sortDir ? sortRows(filtered, (g) => g.gatewayCode, sortDir) : filtered
   const visible = sorted.slice((page - 1) * perPage, page * perPage)
 
   const toggleSort = () => {
@@ -27,7 +35,13 @@ export default function GatewayListPage() {
         <p className="mt-[15px] text-[11px] text-[#575757]">/Payment Gateway/ Payment Gateway List</p>
       </div>
 
-      <FilterBar fields={['Payment Gateway Name', 'Payment Gateway Code']} />
+      <FilterBar
+        fields={FIELDS}
+        onSubmit={(v) => {
+          setFilters(v)
+          setPage(1)
+        }}
+      />
 
       <div className="rounded-[4px] bg-white p-[28px] shadow-card">
         <div className="flex flex-wrap items-center justify-end gap-[12px]">

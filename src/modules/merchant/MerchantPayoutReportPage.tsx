@@ -1,18 +1,28 @@
 import { useState } from 'react'
 import Pagination from '@/shared/ui/Pagination'
-import FilterBar from '@/shared/ui/FilterBar'
+import FilterBar, { type Field } from '@/shared/ui/FilterBar'
+import { filterRows } from '@/shared/ui/filterRows'
 import PayoutTable from './components/PayoutTable'
 import { payouts } from './data'
 import { nextSortDir, sortRows, type SortDir } from './sortMerchants'
+
+// ponytail: payout rows carry no Company RegNo, so filtering is by the two fields
+// they actually hold — add the third when the data does.
+const FIELDS: Field[] = [
+  { label: 'Merchant Code', key: 'merchantCode' },
+  { label: 'Merchant Name', key: 'merchantName' },
+]
 
 export default function MerchantPayoutReportPage() {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
   const [sortDir, setSortDir] = useState<SortDir | null>(null)
-  const pages = Math.max(1, Math.ceil(payouts.length / perPage))
+  const [filters, setFilters] = useState<Record<string, string>>({})
+  const filtered = filterRows(payouts, filters, FIELDS)
+  const pages = Math.max(1, Math.ceil(filtered.length / perPage))
   // Sorting the whole set before paging keeps page 1 on the true first rows;
   // untouched, the rows stay in the order they arrived.
-  const sorted = sortDir ? sortRows(payouts, (p) => p.transactionNo, sortDir) : payouts
+  const sorted = sortDir ? sortRows(filtered, (p) => p.transactionNo, sortDir) : filtered
   const visible = sorted.slice((page - 1) * perPage, page * perPage)
 
   const toggleSort = () => {
@@ -27,7 +37,13 @@ export default function MerchantPayoutReportPage() {
         <p className="mt-[15px] text-[11px] text-[#575757]">/Merchant/ Merchant Payout Report</p>
       </div>
 
-      <FilterBar fields={['Merchant Code', 'Merchant Name', 'Company RegNo']} />
+      <FilterBar
+        fields={FIELDS}
+        onSubmit={(v) => {
+          setFilters(v)
+          setPage(1)
+        }}
+      />
 
       <div className="rounded-[4px] bg-white p-[28px] shadow-card">
         <div className="flex flex-wrap items-center justify-end gap-[12px]">

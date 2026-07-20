@@ -1,19 +1,28 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Pagination from '@/shared/ui/Pagination'
-import FilterBar from '@/shared/ui/FilterBar'
+import FilterBar, { type Field } from '@/shared/ui/FilterBar'
+import { filterRows } from '@/shared/ui/filterRows'
 import MerchantTable from './components/MerchantTable'
 import { merchants } from './data'
 import { nextSortDir, sortMerchants, type SortDir } from './sortMerchants'
+
+const FIELDS: Field[] = [
+  { label: 'Merchant Code', key: 'merchantCode' },
+  { label: 'Merchant Name', key: 'merchantName' },
+  { label: 'Company RegNo', key: 'companyRegNo' },
+]
 
 export default function MerchantListPage() {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
   const [sortDir, setSortDir] = useState<SortDir | null>(null)
-  const pages = Math.max(1, Math.ceil(merchants.length / perPage))
+  const [filters, setFilters] = useState<Record<string, string>>({})
+  const filtered = filterRows(merchants, filters, FIELDS)
+  const pages = Math.max(1, Math.ceil(filtered.length / perPage))
   // Sorting the whole set before paging keeps page 1 on the true first rows;
   // untouched, the rows stay in the order they arrived.
-  const sorted = sortDir ? sortMerchants(merchants, sortDir) : merchants
+  const sorted = sortDir ? sortMerchants(filtered, sortDir) : filtered
   const visible = sorted.slice((page - 1) * perPage, page * perPage)
 
   const toggleSort = () => {
@@ -28,7 +37,13 @@ export default function MerchantListPage() {
         <p className="mt-[15px] text-[11px] text-[#575757]">/Merchant/ Merchant List</p>
       </div>
 
-      <FilterBar fields={['Merchant Code', 'Merchant Name', 'Company RegNo']} />
+      <FilterBar
+        fields={FIELDS}
+        onSubmit={(v) => {
+          setFilters(v)
+          setPage(1)
+        }}
+      />
 
       <div className="rounded-[4px] bg-white p-[28px] shadow-card">
         <div className="flex flex-wrap items-center justify-between gap-[12px]">

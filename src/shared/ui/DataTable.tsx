@@ -32,7 +32,7 @@ export default function DataTable<T>({
   rowKey,
   cells,
   action,
-  empty,
+  empty = 'No records found',
   minWidth,
   sortDir = null,
   onToggleSort,
@@ -46,7 +46,7 @@ export default function DataTable<T>({
   // The Action column's content. Destinations differ per table, so the caller
   // renders it; the last column exists only when this is passed.
   action?: (row: T) => ReactNode
-  // Only worth passing where rows can be filtered away — a static list is never empty.
+  // Shown when rows is empty (e.g. a filter matched nothing). Defaults on.
   empty?: string
   minWidth?: string
   // Structurally SortDir, declared inline so shared/ui doesn't import a module.
@@ -69,14 +69,14 @@ export default function DataTable<T>({
 
               if (!c.sortable || !onToggleSort) {
                 return (
-                  <th key={c.label[0]} scope="col" className={cls}>
+                  <th key={i} scope="col" className={cls}>
                     <Lines lines={c.label} />
                   </th>
                 )
               }
               return (
                 <th
-                  key={c.label[0]}
+                  key={i}
                   scope="col"
                   aria-sort={sortDir ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
                   className={`${cls} p-0`}
@@ -106,7 +106,7 @@ export default function DataTable<T>({
           {rows.map((row, i) => (
             <tr key={rowKey(row)} className={i % 2 === 0 ? 'bg-[#eff2f7]' : 'bg-white'}>
               {cells(row).map((cell, j) => (
-                <td key={columns[j].label[0]} className={CELL}>
+                <td key={j} className={CELL}>
                   {isText(cell) ? <Lines lines={typeof cell === 'string' ? [cell] : cell} /> : cell}
                 </td>
               ))}

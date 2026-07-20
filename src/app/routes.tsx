@@ -16,6 +16,8 @@ function Placeholder({ name }: { name: string }) {
 export const routes: RouteObject[] = [
   {
     element: <Layout />,
+    // Any uncaught render/loader error lands on the 404 page instead of a blank screen.
+    errorElement: <NotFound />,
     children: [
       ...dashboardRoutes,
       ...merchantRoutes,

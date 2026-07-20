@@ -1,10 +1,23 @@
 import { useState } from 'react'
-import FilterBar from '@/shared/ui/FilterBar'
+import FilterBar, { type Field } from '@/shared/ui/FilterBar'
 import Pagination from '@/shared/ui/Pagination'
+import { filterRows } from '@/shared/ui/filterRows'
 import StatCard from '@/modules/dashboard/components/StatCard'
 import { nextSortDir, sortRows, type SortDir } from '@/modules/merchant/sortMerchants'
 import TransactionListTable from './components/TransactionListTable'
 import { transactions, TRANSACTION_STATUSES } from './data'
+
+const FIELDS: Field[] = [
+  { label: 'Transaction No', key: 'transactionNo' },
+  { label: 'Merchant TransNo', key: 'merchantTransNo' },
+  { label: 'Merchant OrderNo', key: 'merchantOrderNo' },
+  { label: 'Merchant Code', key: 'merchantCode' },
+  { label: 'Currency Code', key: 'currencyCode' },
+  { label: 'Customer Email', key: 'customerEmail' },
+  { label: 'Customer Phone', key: 'customerPhone' },
+  { label: 'Customer Name', key: 'customerName' },
+  { label: 'Transaction Status', key: 'status', options: TRANSACTION_STATUSES },
+]
 
 // Totals are the comp's figures, not derived from the rows — the comp counts the
 // whole result set, of which `transactions` is one mock page.
@@ -19,10 +32,12 @@ export default function TransactionListPage() {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
   const [sortDir, setSortDir] = useState<SortDir | null>(null)
-  const pages = Math.max(1, Math.ceil(transactions.length / perPage))
+  const [filters, setFilters] = useState<Record<string, string>>({})
+  const filtered = filterRows(transactions, filters, FIELDS)
+  const pages = Math.max(1, Math.ceil(filtered.length / perPage))
   // Sorting the whole set before paging keeps page 1 on the true first rows;
   // untouched, the rows stay in the order they arrived.
-  const sorted = sortDir ? sortRows(transactions, (t) => t.transactionNo, sortDir) : transactions
+  const sorted = sortDir ? sortRows(filtered, (t) => t.transactionNo, sortDir) : filtered
   const visible = sorted.slice((page - 1) * perPage, page * perPage)
 
   const toggleSort = () => {
@@ -38,17 +53,11 @@ export default function TransactionListPage() {
       </div>
 
       <FilterBar
-        fields={[
-          'Transaction No',
-          'Merchant TransNo',
-          'Merchant OrderNo',
-          'Merchant Code',
-          'Currency Code',
-          'Customer Email',
-          'Customer Phone',
-          'Customer Name',
-          { label: 'Transaction Status', options: TRANSACTION_STATUSES },
-        ]}
+        fields={FIELDS}
+        onSubmit={(v) => {
+          setFilters(v)
+          setPage(1)
+        }}
       />
 
       <div className="grid gap-[22px] sm:grid-cols-2 xl:grid-cols-4">

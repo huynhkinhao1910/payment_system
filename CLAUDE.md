@@ -57,6 +57,28 @@ Detail and Edit are the same Figma comp, so they're the same component: `Merchan
 `readOnly` and disables its inputs. Add a `readOnly` mode to the existing form before writing a
 separate detail page.
 
+## List pages
+
+Every list (Merchant, Payout, Gateway, Transaction, Paylink, Refund) is the same skeleton — copy an
+existing one, don't invent a new shape. `PaylinkListPage.tsx` is the reference.
+
+- **State is exactly four:** `page`, `perPage`, `sortDir` (`SortDir | null`), `filters`
+  (`Record<string, string>`). Nothing else belongs in the page.
+- **Pipeline is filter → sort → slice, in that order.** `filterRows(rows, filters, FIELDS)`, then
+  `sortRows(..., sortDir)` when sorted, then `.slice((page-1)*perPage, page*perPage)`. Compute
+  `pages` from the *filtered* length, never the raw array.
+- **`FIELDS` is a module const** (`Field[]` from `@/shared/ui/FilterBar`), one entry per filter with
+  the row `key` it matches; an `options` list makes it a select. Only list keys the row actually
+  has — a field with no backing data is a dead filter (the payout page drops Company RegNo for this).
+- **`FilterBar` takes `fields={FIELDS}` and `onSubmit={v => { setFilters(v); setPage(1) }}`.**
+  Filtering resets to page 1; so does changing `perPage`.
+- **Filter semantics live in `filterRows`, not the page:** text = case-insensitive substring, select
+  = exact match, `''`/`All` = no filter, multiple fields AND together. Don't hand-roll `.filter()`
+  in a page — extend `filterRows` (with a test) if a page needs more.
+- **The table is a thin wrapper over `DataTable`** — a `COLUMNS` const, the `ACTION` disc const,
+  `cells(row)` returning one entry per column, `action(row)` for the last. Status cells render
+  `StatusBadge` (by intent: `success`/`pending`/`danger`), not a hand-tinted `<span>`.
+
 ## Conventions
 
 - Mark deliberate shortcuts with a `// ponytail:` comment naming the ceiling and the upgrade path.
@@ -70,6 +92,9 @@ separate detail page.
 - Modules own their routes (`modules/<name>/index.tsx` exports `<name>Routes`) and their mock data
   (`data.ts`). `app/routes.tsx` only spreads them.
 - Import from `@/` — it's aliased to `src/`. No `../../`.
+- **Format:** single quotes, no semicolons, 2-space indent, trailing commas in multiline. Match the
+  file you're in; whitespace basics are pinned in `.editorconfig`. There's no Prettier — don't add one
+  or reflow untouched lines.
 
 ## Styling
 
