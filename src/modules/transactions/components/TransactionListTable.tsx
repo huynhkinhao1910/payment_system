@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import iconEye from '@/assets/icon-eye.svg'
 import DataTable, { type Column } from '@/shared/ui/DataTable'
+import StatusBadge from '@/shared/ui/StatusBadge'
 import type { SortDir } from '@/modules/merchant/sortMerchants'
 import type { Transaction } from '../data'
 
@@ -20,14 +21,6 @@ const COLUMNS: Column[] = [
 ]
 
 const ACTION = 'flex size-[26px] items-center justify-center rounded-full transition-colors'
-
-// Colour carries the same meaning as the text, so the text stays — it's the only
-// thing a screen reader or a colour-blind reader gets.
-const STATUS_TINT: Record<string, string> = {
-  Pending: 'bg-[#ffeede] text-[#f1b44c]',
-  Approved: 'bg-[#e0f5e8] text-[#34c38f]',
-  Failed: 'bg-[#ffe3e3] text-[#ff5353]',
-}
 
 export default function TransactionListTable({
   rows,
@@ -58,7 +51,13 @@ export default function TransactionListTable({
         t.gatewayCode,
         t.gatewayType,
         // oxlint-disable-next-line jsx-key -- DataTable renders a cell as its <td>'s only child, not as an array item
-        <span className={`rounded-[3px] px-[8px] py-[3px] text-[11px] ${STATUS_TINT[t.status] ?? ''}`}>{t.status}</span>,
+        <StatusBadge
+          variant={
+            t.status === 'Pending' ? 'pending' : t.status === 'Approved' ? 'success' : t.status === 'Failed' ? 'danger' : 'neutral'
+          }
+        >
+          {t.status}
+        </StatusBadge>,
       ]}
       action={(t) => (
         <Link

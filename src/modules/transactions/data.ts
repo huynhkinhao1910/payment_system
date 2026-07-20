@@ -47,3 +47,76 @@ export const transactions: Transaction[] = Array.from({ length: 24 }, (_, i) => 
     remark: '-',
   }
 })
+
+// Paylink List (Transactions/ Paylink List). A flat row — no shared Transaction
+// Detail comp behind it yet, so it doesn't extend Payout.
+export type Paylink = {
+  transactionNo: string
+  createdOn: string
+  merchantCode: string
+  customerName: string
+  customerEmail: string
+  transactionAmount: string
+  currencyCode: string
+  status: string
+}
+
+export const PAYLINK_STATUSES = ['All', 'Pending', 'Approved', 'Failed']
+
+export const paylinks: Paylink[] = Array.from({ length: 24 }, (_, i) => ({
+  transactionNo: `Y202606B0000000${(1 + i).toString().padStart(2, '0')}`,
+  createdOn: `08/06/2026 10:${(30 - (i % 4)).toString().padStart(2, '0')}:07`,
+  merchantCode: 'SI0001',
+  customerName: 'SINNO Test Merchant',
+  customerEmail: 'nguyenductong860432@gmail.com',
+  transactionAmount: '110.00',
+  currencyCode: 'MYR',
+  status: 'Pending',
+}))
+
+// Request Refund (Transactions/ Request Refund). The eye opens the same
+// read-only Transaction Detail comp, so a row is a Payout plus the refund list's
+// own columns. Approved On/By stay blank until a refund is acted on.
+export type RefundRequest = Payout & {
+  createdOn: string
+  approvedOn: string
+  createdBy: string
+  approvedBy: string
+}
+
+export const REFUND_STATUSES = ['All', 'Pending', 'Approved', 'Error']
+
+export const refundRequests: RefundRequest[] = Array.from({ length: 24 }, (_, i) => {
+  const status = ['Approved', 'Pending', 'Approved', 'Pending', 'Error', 'Pending'][i % 6]
+  const approved = status === 'Approved'
+  return {
+    transactionNo: `Y202606B0000000${(1 + i).toString().padStart(2, '0')}`,
+    merchantCode: 'SI0001',
+    merchantName: 'SINNO Test Merchant',
+    merchantTransNo: `C2606${17 + (i % 2)}SX1S1917`,
+    merchantOrderNo: `T60608000000${(4 + i).toString().padStart(2, '0')}`,
+    transactionAmount: '110.00',
+    currencyCode: 'MYR',
+    createdOn: `08/06/2026 10:${(30 - (i % 4)).toString().padStart(2, '0')}:07`,
+    approvedOn: approved ? '09/06/2026 10:38:07' : '-',
+    createdBy: 'Hao Huynh',
+    approvedBy: approved ? 'Suriey Nguyen' : '-',
+    status,
+    transactionDate: `08/06/2026 10:${(30 - (i % 4)).toString().padStart(2, '0')}:07`,
+    customerName: 'MSGYENO',
+    customerEmail: 'nkecl@gmail.com',
+    customerPhone: '+60123456788',
+    customerAddress: '-',
+    customerIpAddress: '10.116.21.169',
+    customerConfirmMess: '-',
+    gatewayCode: 'FMSPAY',
+    gatewayCodeSub: '',
+    gatewayStatus: '',
+    gatewayConfirmMessage: '',
+    grossPayout: '110.00',
+    netPayout: '110.00',
+    merchantRate: '-',
+    merchantFee: '',
+    remark: '-',
+  }
+})

@@ -31,3 +31,34 @@ If you are developing a production application, we recommend enabling type-aware
 
 See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
 # payment_system
+
+## Project
+
+`payment-fe` is a mock payments dashboard frontend (React + TypeScript + Vite + Tailwind). It contains feature modules for merchants, transactions, and gateways with mock data and reusable UI primitives.
+
+## Architecture
+
+See the architecture document for details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+
+## Run locally
+
+Install dependencies and start the dev server:
+
+```bash
+npm install
+npm run dev
+```
+
+Build and typecheck:
+
+```bash
+npx tsc -b
+npm run build
+```
+
+Run tests:
+
+```bash
+npm test
+```
+

@@ -34,10 +34,12 @@ export default function TransactionDetailPage({
   rows = payouts,
   backTo = '/merchant-payout-report',
   breadcrumb = '/Merchant/ Merchant Payout Report/ Transaction Detail',
+  title = 'TRANSACTION DETAIL',
 }: {
   rows?: Payout[]
   backTo?: string
   breadcrumb?: string
+  title?: string
 } = {}) {
   const { transactionNo } = useParams()
   const payout = rows.find((p) => p.transactionNo === transactionNo)
@@ -68,7 +70,7 @@ export default function TransactionDetailPage({
   return (
     <div className="flex flex-col gap-[22px]">
       <div>
-        <h1 className="text-[14px] font-medium text-[#353535]">TRANSACTION DETAIL</h1>
+        <h1 className="text-[14px] font-medium text-[#353535]">{title}</h1>
         <p className="mt-[15px] text-[11px] text-[#575757]">{breadcrumb}</p>
       </div>
 

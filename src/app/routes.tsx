@@ -1,5 +1,7 @@
 import type { RouteObject } from 'react-router-dom'
 import Layout from '@/shared/layout/Layout'
+import NotFound from '@/shared/layout/NotFound'
+import NoPermission from '@/shared/layout/NoPermission'
 import { dashboardRoutes } from '@/modules/dashboard'
 import { merchantRoutes } from '@/modules/merchant'
 import { paymentGatewayRoutes } from '@/modules/payment-gateway'
@@ -21,6 +23,8 @@ export const routes: RouteObject[] = [
       ...transactionRoutes,
       { path: 'system-log', element: <Placeholder name="System Log" /> },
       { path: 'tools', element: <Placeholder name="Tools" /> },
+      { path: 'no-permission', element: <NoPermission /> },
+      { path: '*', element: <NotFound /> },
     ],
   },
 ]

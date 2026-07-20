@@ -37,7 +37,11 @@ export const NAV: NavItem[] = [
   {
     label: 'Transactions',
     icon: iconPayment,
-    children: [{ to: '/transactions', label: 'Transaction List' }],
+    children: [
+      { to: '/transactions', label: 'Transaction List' },
+      { to: '/paylinks', label: 'Paylink List' },
+      { to: '/refund-requests', label: 'Refund Request' },
+    ],
   },
   { label: 'System Log', icon: iconLog, children: [] },
   { label: 'Tools', icon: iconTool, children: [] },

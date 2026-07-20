@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import iconEye from '@/assets/icon-eye.svg'
 import DataTable, { type Column } from '@/shared/ui/DataTable'
+import StatusBadge from '@/shared/ui/StatusBadge'
 import type { Payout } from '../data'
 import type { SortDir } from '../sortMerchants'
 
@@ -18,6 +19,8 @@ const COLUMNS: Column[] = [
 ]
 
 const ACTION = 'flex size-[26px] items-center justify-center rounded-full transition-colors'
+
+const VARIANT = { Approved: 'success', Pending: 'pending', Failed: 'danger' } as const
 
 export default function PayoutTable({
   rows,
@@ -44,7 +47,8 @@ export default function PayoutTable({
         p.netPayout,
         [p.merchantRate, p.merchantFee],
         p.transactionDate,
-        p.status,
+        // oxlint-disable-next-line jsx-key -- DataTable renders a cell as its <td>'s only child, not as an array item
+        <StatusBadge variant={VARIANT[p.status as keyof typeof VARIANT] ?? 'neutral'}>{p.status}</StatusBadge>,
       ]}
       action={(p) => (
         <Link

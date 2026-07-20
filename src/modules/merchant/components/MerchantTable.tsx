@@ -5,6 +5,7 @@ import iconEdit from '@/assets/icon-edit.svg'
 import iconPassword from '@/assets/icon-password.svg'
 import type { Merchant } from '../data'
 import type { SortDir } from '../sortMerchants'
+import StatusBadge from '@/shared/ui/StatusBadge'
 
 const COLUMNS = [
   { label: 'Merchant Code', w: 'w-[151px]', sortable: true },
@@ -42,7 +43,13 @@ function Row({ m, zebra }: { m: Merchant; zebra: boolean }) {
     <div className="flex items-center">
       {cells.map((value, i) => (
         <div key={COLUMNS[i].label} className={`${CELL} ${bg} ${COLUMNS[i].w} ${i === 0 ? 'border-l' : ''} truncate`}>
-          <span className="truncate">{value}</span>
+          {i === 8 ? (
+            <StatusBadge variant={value === 'Pending' ? 'pending' : value === 'Approved' ? 'success' : 'neutral'}>
+              {value}
+            </StatusBadge>
+          ) : (
+            <span className="truncate">{value}</span>
+          )}
         </div>
       ))}
       <div className={`${CELL} ${bg} w-[100px] justify-center gap-[6px]`}>
